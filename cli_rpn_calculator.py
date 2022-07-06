@@ -10,7 +10,7 @@ operations = {
 stack = []
 
 
-def input_user_expression() -> list:
+def input_user_expression():
     """This function will receive user's expression and send it
     to validation"""
     expression = input("Please enter Your expression: ")
@@ -18,16 +18,13 @@ def input_user_expression() -> list:
     return end_of_program_check(tokens)
 
 
-def end_of_program_check(tokens: list) -> list:
+def end_of_program_check(tokens: list):
     """This function will end the program execution if received "q" command
     or an end of input indicator"""
-    try:
-        if tokens == ['q']:
-            print(f'Thank You! See you next time!')
-        else:
-            return user_input_validation(tokens)
-    except EOFError:
-        print(f'Program has been ended by force')
+    if tokens == ['q']:
+        raise EOFError
+    else:
+        return user_input_validation(tokens)
 
 
 def user_input_validation(tokens: list):
@@ -39,8 +36,7 @@ def user_input_validation(tokens: list):
             validation_list.append(round(float(token), 2)) \
                 if token not in operations else validation_list.append(token)
     except ValueError:
-        print(f'Please enter only numbers and operators "+, -, * or /"')
-        return input_user_expression()
+        return 'Please enter only numbers and operators "+, -, * or /"'
     return check_numbers_and_operators_amount(tokens)
 
 
@@ -58,14 +54,14 @@ def check_numbers_and_operators_amount(tokens: list):
             operators_list.append(token)
     total_numbers_list = numbers_list + stack
     if (len(total_numbers_list) - len(operators_list)) < 1:
-        print(f'Amount of operators should be less than amount of numbers!')
-        return input_user_expression()
+        return 'Amount of operators should be less than amount of numbers!'
     return calculation(tokens)
 
 
 def calculation(tokens: list):
     """This function will perform the final calculations based on the received
     validated tokens"""
+    stack.clear() if stack == [0.0] else None
     try:
         for token in tokens:
             if token in operations:
@@ -75,11 +71,10 @@ def calculation(tokens: list):
                 stack.append(round(float(result), 2))
             else:
                 stack.append(round(float(token), 2))
-        print(*stack)
-        stack.clear() if stack == [0.0] else None
-        return input_user_expression()
+        stack_str = [str(num) for num in stack]
+        return ", ".join(stack_str)
     except ZeroDivisionError:
-        print(f'Please never divide by zero!')
+        return f'Please never divide by zero!'
 
 
 if __name__ == '__main__':
@@ -94,5 +89,9 @@ if __name__ == '__main__':
         Input: +, Output: 8.0 (5.0 + 3.0). Have fun!''')
     args = parser.parse_args()
 
-input_user_expression()
-
+    while True:
+        try:
+            print(input_user_expression())
+        except EOFError:
+            print(f'Program ended')
+            break
