@@ -24,7 +24,7 @@ In order to run CLI RPN calculator You can use command
 "Please enter Your expression: ", You can enter Your expression like "1 2 3 + -".
 This program has an option to save results of previous calculations and inputs,
 so You can enter Your expression separately like: Input: 5, Output: 5.0;
-Input: 3, Output: 5.0 3.0; Input: +, Output: 8.0. 
+Input: 3, Output: 5.0, 3.0; Input: +, Output: 8.0. 
 To end the program execution You can use the "q" command or an end of input 
 indicator (EOF, CtrlD for Linux and MacOS or CtrlX for Windows).
 
@@ -34,6 +34,7 @@ I used lambda functions to create this calculator in order to be able to expand
 its functionality in the future by adding additional operators. In this case, 
 minor code changes will be required. Also, I used separate functions for 
 different types of validation to be able to test it and add new one if required.
+Program tested with unittest. Coverage: 79% (checked with nosetests).
 
 
 
