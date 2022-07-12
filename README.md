@@ -32,9 +32,6 @@ indicator (EOF, CtrlD for Linux and MacOS or CtrlX for Windows).
 
 I used lambda functions to create this calculator in order to be able to expand 
 its functionality in the future by adding additional operators. In this case, 
-minor code changes will be required. Also, I used separate functions for 
-different types of validation to be able to test it and add new one if required.
-Program tested with unittest. Coverage: 79% (checked with nosetests).
-
-
-
+minor code changes will be required. Also, I used exceptions to be able to test 
+it and add new one if required.
+Program tested with unittest. Coverage: 89% (checked with nosetests).
