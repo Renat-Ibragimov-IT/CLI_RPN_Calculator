@@ -1,48 +1,42 @@
 import unittest
-from cli_rpn_calculator import end_of_program_check, user_input_validation, \
-    check_numbers_and_operators_amount, calculation
+from unittest.mock import patch
+from cli_rpn_calculator import calculation, check_user_expression
 
 
-class TestEndOfProgramCheck(unittest.TestCase):
-    def test_q_command(self):
-        with self.assertRaises(EOFError):
-            end_of_program_check(['q'])
-
-    def test_another_input(self):
-        actual = end_of_program_check(['5', 'fgfgff', '+'])
-        expected = user_input_validation(['5', 'fgfgff', '+'])
+class TestCalculationErrors(unittest.TestCase):
+    def test_zero_division(self):
+        actual = calculation(['5', '0', '/'])
+        expected = 'Please never divide by zero!'
         self.assertEqual(actual, expected)
 
-
-class TestUserInputValidation(unittest.TestCase):
-    def test_incorrect_user_input(self):
-        actual = user_input_validation(['hjbhjbhjb', 'hjbhjb', '+'])
-        expected = 'Please enter only numbers and operators "+, -, * or /"'
-        self.assertEqual(actual, expected)
-
-    def test_correct_user_input(self):
-        actual = user_input_validation(['1', '2', '+', '+'])
-        expected = check_numbers_and_operators_amount(['1', '2', '+', '+'])
-        self.assertEqual(actual, expected)
-
-
-class TestCheckNumbersAndOperatorsAmount(unittest.TestCase):
-    def test_check_incorrect_numbers_and_operators_amount(self):
-        actual = check_numbers_and_operators_amount(['5', '2', '+', '-'])
+    def test_index_error(self):
+        actual = calculation(['5', '5', '+', '-'])
         expected = 'Amount of operators should be less than amount of numbers!'
         self.assertEqual(actual, expected)
 
+    def test_value_error(self):
+        actual = calculation(['a', '#'])
+        expected = 'Please enter only numbers and operators "+, -, * or /"'
+        self.assertEqual(actual, expected)
 
-class TestCalculation(unittest.TestCase):
-    def test_expressions_true(self):
+
+class TestCalculationExpressionTrue(unittest.TestCase):
+    def test_expression_true(self):
         actual = calculation(['1', '2', '3', '4', '5', '/', '*', '-', '+'])
         expected = '0.6'
         self.assertEqual(actual, expected)
 
-    def test_zero_division(self):
-        actual = calculation(['0', '/'])
-        expected = 'Please never divide by zero!'
-        self.assertEqual(actual, expected)
+
+class TestUserExpression(unittest.TestCase):
+    def test_user_expression(self):
+        with patch('builtins.input', return_value='5 5 +'):
+            self.assertEqual(check_user_expression(), ['5', '5', '+'])
+
+    def test_q_command(self):
+        with patch('builtins.input', return_value='q'):
+            with self.assertRaises(EOFError) as context:
+                check_user_expression()
+                self.assertTrue('Program ended' in context.exception)
 
 
 if __name__ == '__main__':
